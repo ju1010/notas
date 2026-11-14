@@ -583,10 +583,6 @@ class Api:
         texto = texto or ""
         return {"ok": copiar_al_portapapeles(texto), "largo": len(texto)}
 
-    def portapapeles(self):
-        """Devuelve el texto del portapapeles tal cual, sin tocarlo ('' si no se puede leer)."""
-        return leer_portapapeles()
-
     def abrir_url(self, url: str):
         """Abre un link en el navegador del sistema. Solo http y https."""
         url = (url or "").strip()

@@ -459,23 +459,11 @@ function marcarSeleccion(marca) {
 
 // --------------------------------------------------------------- links
 // Convierte la selección en un link a internet: [texto](https://...)
-async function insertarEnlace() {
+function insertarEnlace() {
   const ed = $("editor");
   const ini = ed.selectionStart;
   const fin = ed.selectionEnd;
   const sel = ed.value.slice(ini, fin);
-
-  // Si el portapapeles ya tiene una URL, se usa sin preguntar nada.
-  let pegado = "";
-  try {
-    pegado = String((await estado.api.portapapeles()) || "").trim();
-  } catch (e) {
-    pegado = "";
-  }
-  if (/^https?:\/\/\S+$/i.test(pegado)) {
-    aplicarEnlace(ini, fin, sel, pegado);
-    return;
-  }
 
   // Si el menú no está abierto (atajo de teclado), lo abro cerca del editor.
   const m = $("menu");
@@ -512,11 +500,24 @@ function pedirUrl(ini, fin, sel) {
   });
 }
 
+// "github.com/x" -> "https://github.com/x"; deja intacto lo que ya trae esquema.
+function normalizarUrl(url) {
+  const limpio = (url || "").trim();
+  if (!limpio) return "";
+  if (/^[a-z][a-z0-9+.-]*:\/\//i.test(limpio)) return limpio;
+  return "https://" + limpio.replace(/^\/+/, "");
+}
+
 function aplicarEnlace(ini, fin, sel, url) {
   const ed = $("editor");
+  const limpia = normalizarUrl(url);
+  if (!limpia) {
+    ed.focus();
+    return;
+  }
   const texto = sel.trim().replace(/\]/g, "\\]");
   // Un espacio o un paréntesis en la URL rompe el markdown: va entre < >
-  const destino = /[\s()<>]/.test(url) ? "<" + url + ">" : url;
+  const destino = /[\s()<>]/.test(limpia) ? "<" + limpia + ">" : limpia;
   const md = texto ? `[${texto}](${destino})` : `[](${destino})`;
   ed.setRangeText(md, ini, fin, "end");
   $("cuerpo").classList.remove("lectura");

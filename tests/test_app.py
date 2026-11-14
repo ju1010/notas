@@ -105,10 +105,6 @@ class TestLinks(unittest.TestCase):
         self.assertFalse(api.abrir_url(""))
         self.assertFalse(api.abrir_url(None))
 
-    def test_portapapeles_devuelve_texto(self):
-        # puede venir vacio (por ejemplo en un runner sin portapapeles), pero nunca None
-        self.assertIsInstance(app.Api().portapapeles(), str)
-
     def test_abrir_url_le_pasa_la_url_al_navegador(self):
         import webbrowser
         from unittest import mock
