@@ -92,6 +92,7 @@ En macOS los atajos van con `Cmd`; en Windows y Linux, con `Ctrl`.
 | Guardar ya | `Ctrl/Cmd+S` (igual se guarda solo) |
 | Pegar un error como bloque plegable | botón **Pegar bloque**, o `Ctrl/Cmd+Shift+V` |
 | Envolver lo seleccionado en un bloque | `Ctrl/Cmd+Shift+B` |
+| Convertir la selección en un link | click derecho → **Enlace a internet**, o `Ctrl/Cmd+Shift+L` |
 | Copiar el contenido de un bloque, limpio | botón de copiar en el bloque |
 | Menú de markdown (títulos, código, tabla) | clic derecho en el editor |
 | Pintar una tarjeta | hover sobre la tarjeta, círculo arriba a la derecha |

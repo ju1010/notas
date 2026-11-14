@@ -97,5 +97,26 @@ class TestExtracto(unittest.TestCase):
         self.assertNotIn("no deberia aparecer", salida)
 
 
+class TestLinks(unittest.TestCase):
+    def test_abrir_url_rechaza_lo_que_no_es_web(self):
+        api = app.Api()
+        self.assertFalse(api.abrir_url("file:///etc/passwd"))
+        self.assertFalse(api.abrir_url("javascript:alert(1)"))
+        self.assertFalse(api.abrir_url(""))
+        self.assertFalse(api.abrir_url(None))
+
+    def test_portapapeles_devuelve_texto(self):
+        # puede venir vacio (por ejemplo en un runner sin portapapeles), pero nunca None
+        self.assertIsInstance(app.Api().portapapeles(), str)
+
+    def test_abrir_url_le_pasa_la_url_al_navegador(self):
+        import webbrowser
+        from unittest import mock
+
+        with mock.patch.object(webbrowser, "open", return_value=True) as abrir:
+            self.assertTrue(app.Api().abrir_url("  https://example.com/x  "))
+            abrir.assert_called_once_with("https://example.com/x")
+
+
 if __name__ == "__main__":
     unittest.main()

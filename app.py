@@ -15,6 +15,7 @@ import subprocess
 import threading
 import time
 import unicodedata
+import webbrowser
 from datetime import datetime
 from pathlib import Path
 
@@ -581,6 +582,20 @@ class Api:
         """Copia texto limpio al portapapeles (para pegarlo en WhatsApp, etc.)."""
         texto = texto or ""
         return {"ok": copiar_al_portapapeles(texto), "largo": len(texto)}
+
+    def portapapeles(self):
+        """Devuelve el texto del portapapeles tal cual, sin tocarlo ('' si no se puede leer)."""
+        return leer_portapapeles()
+
+    def abrir_url(self, url: str):
+        """Abre un link en el navegador del sistema. Solo http y https."""
+        url = (url or "").strip()
+        if not re.match(r"^https?://", url, re.I):
+            return False
+        try:
+            return webbrowser.open(url)
+        except Exception:
+            return False
 
     def registrar(self, texto: str):
         """Log chiquito para diagnosticar el front sin abrir devtools."""

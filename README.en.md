@@ -91,6 +91,7 @@ On macOS shortcuts use `Cmd`; on Windows and Linux, `Ctrl`.
 | Save now | `Ctrl/Cmd+S` (it saves on its own anyway) |
 | Paste an error as a folded block | **Paste block** button, or `Ctrl/Cmd+Shift+V` |
 | Wrap the selection in a block | `Ctrl/Cmd+Shift+B` |
+| Turn the selection into a link | right click → **Internet link**, or `Ctrl/Cmd+Shift+L` |
 | Copy the contents of a block, clean | copy button inside the block |
 | Markdown menu (headings, code, table) | right click in the editor |
 | Color a card | hover the card, circle on the top right |

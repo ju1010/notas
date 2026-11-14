@@ -390,6 +390,7 @@ const OPCIONES_MENU = [
   { separador: true },
   { texto: "Negrita", tecla: "**", ejecutar: () => marcarSeleccion("**") },
   { texto: "Cursiva", tecla: "_", ejecutar: () => marcarSeleccion("_") },
+  { texto: "Enlace a internet", tecla: ATAJO("Ctrl+Shift+L"), ejecutar: insertarEnlace },
   { separador: true },
   { texto: "Pegar bloque del portapapeles", tecla: ATAJO("Ctrl+Shift+V"), ejecutar: pegarBloque },
 ];
@@ -454,6 +455,76 @@ function marcarSeleccion(marca) {
   }
   marcarSucio();
   ed.focus();
+}
+
+// --------------------------------------------------------------- links
+// Convierte la selección en un link a internet: [texto](https://...)
+async function insertarEnlace() {
+  const ed = $("editor");
+  const ini = ed.selectionStart;
+  const fin = ed.selectionEnd;
+  const sel = ed.value.slice(ini, fin);
+
+  // Si el portapapeles ya tiene una URL, se usa sin preguntar nada.
+  let pegado = "";
+  try {
+    pegado = String((await estado.api.portapapeles()) || "").trim();
+  } catch (e) {
+    pegado = "";
+  }
+  if (/^https?:\/\/\S+$/i.test(pegado)) {
+    aplicarEnlace(ini, fin, sel, pegado);
+    return;
+  }
+
+  // Si el menú no está abierto (atajo de teclado), lo abro cerca del editor.
+  const m = $("menu");
+  if (m.classList.contains("oculto")) {
+    const r = $("cuerpo").getBoundingClientRect();
+    abrirMenu(r.left + 60, r.top + 60);
+  }
+  pedirUrl(ini, fin, sel);
+}
+
+function pedirUrl(ini, fin, sel) {
+  const m = $("menu");
+  m.innerHTML = "";
+  const caja = document.createElement("div");
+  caja.className = "pedir-url";
+  const input = document.createElement("input");
+  input.type = "text";
+  input.placeholder = "https://...";
+  input.spellcheck = false;
+  caja.appendChild(input);
+  m.appendChild(caja);
+  input.focus();
+
+  const aplicar = () => {
+    const url = input.value.trim();
+    cerrarMenu();
+    if (url) aplicarEnlace(ini, fin, sel, url);
+    else $("editor").focus();
+  };
+
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { e.preventDefault(); aplicar(); }
+    if (e.key === "Escape") { e.preventDefault(); cerrarMenu(); $("editor").focus(); }
+  });
+}
+
+function aplicarEnlace(ini, fin, sel, url) {
+  const ed = $("editor");
+  const texto = sel.trim().replace(/\]/g, "\\]");
+  // Un espacio o un paréntesis en la URL rompe el markdown: va entre < >
+  const destino = /[\s()<>]/.test(url) ? "<" + url + ">" : url;
+  const md = texto ? `[${texto}](${destino})` : `[](${destino})`;
+  ed.setRangeText(md, ini, fin, "end");
+  $("cuerpo").classList.remove("lectura");
+  $("vista").textContent = "Solo lectura";
+  marcarSucio();
+  ed.focus();
+  // sin selección, el cursor queda entre los corchetes para escribir el texto
+  ed.selectionStart = ed.selectionEnd = texto ? ini + md.length : ini + 1;
 }
 
 function abrirMenu(x, y) {
@@ -704,12 +775,21 @@ function conectarEventos() {
     setTimeout(() => ($("modal-copiar").textContent = "Copiar"), 1200);
   });
 
+  // Los links del preview abren el navegador del sistema, no navegan la app.
+  $("preview").addEventListener("click", (e) => {
+    const a = e.target.closest("a[href]");
+    if (!a) return;
+    e.preventDefault();
+    estado.api.abrir_url(a.getAttribute("href"));
+  });
+
   document.addEventListener("keydown", (e) => {
     const ctrl = e.ctrlKey || e.metaKey;
     if (e.key === "Escape") { cerrarModal(); cerrarMenu(); cerrarPaleta(); return; }
 
     if (ctrl && e.shiftKey && e.key.toLowerCase() === "v") { e.preventDefault(); pegarBloque(); }
     if (ctrl && e.shiftKey && e.key.toLowerCase() === "b") { e.preventDefault(); envolverSeleccion(); }
+    if (ctrl && e.shiftKey && e.key.toLowerCase() === "l") { e.preventDefault(); insertarEnlace(); }
     if (ctrl && e.shiftKey && e.key.toLowerCase() === "n") { e.preventDefault(); $("captura").focus(); }
     if (ctrl && !e.shiftKey && e.key.toLowerCase() === "n") { e.preventDefault(); $("nueva").click(); }
     if (ctrl && !e.shiftKey && e.key.toLowerCase() === "k") { e.preventDefault(); $("buscar").focus(); }

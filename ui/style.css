@@ -314,6 +314,20 @@ footer {
 #menu .item .tecla { font: 11px var(--mono); color: var(--tenue); }
 #menu .sep { height: 1px; background: var(--borde); margin: 4px 6px; }
 
+#menu .pedir-url { padding: 6px; }
+#menu .pedir-url input {
+  width: 250px;
+  padding: 6px 8px;
+  border: 1px solid var(--borde);
+  border-radius: 6px;
+  background: var(--fondo);
+  color: var(--texto);
+  font: 12.5px "Segoe UI", system-ui, sans-serif;
+  outline: none;
+}
+#menu .pedir-url input:focus { border-color: var(--acento); }
+#menu .pedir-url input::placeholder { color: var(--tenue); }
+
 .btn-mini {
   background: transparent;
   border: 1px solid var(--borde);
