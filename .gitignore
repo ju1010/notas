@@ -1,0 +1,23 @@
+# ---------------------------------------------------------------------------
+# Datos personales: NUNCA al repo.
+# Las notas tienen endpoints internos, nombres y datos de clientes.
+# ---------------------------------------------------------------------------
+notas/
+preferencias.json
+debug.log
+*.bak
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Tests
+.pytest_cache/

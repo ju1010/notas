@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Notas</title>
+<link rel="stylesheet" href="style.css?v=12">
+</head>
+<body>
+
+<div id="app">
+
+  <aside>
+    <div class="capturar">
+      <input id="captura" type="text" placeholder="Capturar algo…  (Enter)" autocomplete="off">
+    </div>
+    <div class="lado-arriba">
+      <input id="buscar" type="search" placeholder="Buscar…" autocomplete="off">
+      <button id="nueva" class="icono" title="Nueva nota" data-tecla="Ctrl+N" data-accion="Nueva nota">＋</button>
+    </div>
+    <div class="filtros">
+      <button class="chip activo" data-filtro="todas">Todas</button>
+      <button class="chip" data-filtro="rapida">Rápidas</button>
+      <button class="chip" data-filtro="nota">Notas</button>
+    </div>
+    <div id="lista"></div>
+    <div class="lado-abajo">
+      <button id="carpeta" class="plano">📁 Abrir carpeta</button>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <button id="volver" class="plano" title="Volver a la grilla">← Tarjetas</button>
+      <input id="titulo" placeholder="Título de la nota" autocomplete="off">
+      <input id="tags" placeholder="tags, separados, por coma" autocomplete="off">
+      <button id="pegar" class="primario" title="Pegar del portapapeles como bloque plegable" data-tecla="Ctrl+Shift+V" data-accion="Pegar del portapapeles como bloque plegable">⤓ Pegar bloque</button>
+      <button id="color" class="icono" title="Color de la nota">◍</button>
+      <button id="vista" class="plano" title="Ocultar/mostrar el editor">Solo lectura</button>
+      <button id="borrar" class="icono peligro" title="Borrar nota">🗑</button>
+    </header>
+
+    <div class="cuerpo" id="cuerpo">
+      <textarea id="editor" spellcheck="false"
+        placeholder="Escribí acá. Pegá un error del devtools y apretá «Pegar bloque»."></textarea>
+      <div id="preview" class="md"></div>
+    </div>
+
+    <div id="tarjetas" class="grilla oculto"></div>
+
+    <footer>
+      <span id="estado">—</span>
+      <span class="flex"></span>
+      <span id="ruta"></span>
+    </footer>
+  </main>
+
+</div>
+
+<div id="menu" class="oculto"></div>
+<div id="paleta" class="oculto"></div>
+
+<div id="modal" class="oculto">
+  <div class="caja">
+    <div class="caja-head">
+      <span id="modal-titulo"></span>
+      <span class="flex"></span>
+      <button id="modal-copiar" class="plano">Copiar</button>
+      <button id="modal-cerrar" class="icono">✕</button>
+    </div>
+    <pre id="modal-cuerpo"></pre>
+  </div>
+</div>
+
+<script src="marked.min.js"></script>
+<script src="app.js?v=12"></script>
+</body>
+</html>

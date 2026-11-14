@@ -1,0 +1,6 @@
+# Notas — dependencias
+# Instalar con:  pip install -r requirements.txt
+#
+# pywebview trae lo necesario para la ventana nativa en cada sistema:
+#   Windows -> pythonnet (WebView2)   macOS -> pyobjc (WKWebView)   Linux -> gtk/qt
+pywebview==6.2.1

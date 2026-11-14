@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Tests
+        run: python -m unittest discover -s tests -v
+
+      - name: El lanzador de macOS quedó ejecutable
+        if: runner.os == 'macOS'
+        run: test -x "Iniciar Notas.command"
+
+      - name: El lanzador de macOS no tiene finales de línea de Windows
+        if: runner.os == 'macOS'
+        run: "! grep -q $'\r' 'Iniciar Notas.command'"

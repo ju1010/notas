@@ -1,0 +1,14 @@
+# Normaliza finales de línea por tipo de archivo.
+# Sin esto, git en Windows guarda el .command con CRLF y macOS no lo puede ejecutar
+# ("bad interpreter: /bin/bash^M").
+
+* text=auto
+
+*.command text eol=lf
+*.sh      text eol=lf
+*.py      text eol=lf
+*.bat     text eol=crlf
+
+*.ico     binary
+*.png     binary
+*.min.js  binary
