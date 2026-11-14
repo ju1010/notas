@@ -1,5 +1,7 @@
 # Notas
 
+**Español** · [English](README.en.md)
+
 App de notas local para escribir rápido mientras trabajás. Sin nube, sin cuenta, sin internet:
 las notas son archivos `.md` sueltos en una carpeta.
 
@@ -140,6 +142,31 @@ Corré la app con consola para ver el error:
 # Windows
 .venv\Scripts\python.exe app.py
 ```
+
+## Contribuir
+
+La app es chica y cualquier ayuda suma. No hace falta ser el autor ni conocer todo el código para
+mejorarla.
+
+Si encontrás un bug, abrí un issue contando qué estabas haciendo y qué esperabas que pasara. Si
+querés cambiar algo, mandá un pull request; para cambios chicos no hace falta avisar antes. Si es
+algo grande, abrí primero un issue así acordamos el enfoque antes de que escribas código.
+
+Cosas que faltan y podés tomar:
+
+- capturas de pantalla para el README
+- revisar cómo se ve en pantallas chicas y en Linux
+- atajos de teclado que uno espera encontrar y todavía no están
+- traducciones: hoy está en español e inglés
+- tests de lo que falta cubrir (los archivos de notas y el renombrado, por ejemplo)
+
+Antes de abrir el pull request, corré los tests:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+Tus notas personales nunca van al repo: la carpeta `notas/` está ignorada.
 
 ## Licencia
 
