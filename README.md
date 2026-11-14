@@ -90,6 +90,8 @@ En macOS los atajos van con `Cmd`; en Windows y Linux, con `Ctrl`.
 | Nueva nota | `Ctrl/Cmd+N` |
 | Buscar | `Ctrl/Cmd+K` |
 | Guardar ya | `Ctrl/Cmd+S` (igual se guarda solo) |
+| Deshacer | `Ctrl/Cmd+Z` (incluye lo que hacen los botones del menú) |
+| Rehacer | `Ctrl+Y` o `Ctrl/Cmd+Shift+Z` |
 | Pegar un error como bloque plegable | botón **Pegar bloque**, o `Ctrl/Cmd+Shift+V` |
 | Envolver lo seleccionado en un bloque | `Ctrl/Cmd+Shift+B` |
 | Convertir la selección en un link | click derecho → **Enlace a internet**, o `Ctrl/Cmd+Shift+L` |

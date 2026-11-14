@@ -89,6 +89,8 @@ On macOS shortcuts use `Cmd`; on Windows and Linux, `Ctrl`.
 | New note | `Ctrl/Cmd+N` |
 | Search | `Ctrl/Cmd+K` |
 | Save now | `Ctrl/Cmd+S` (it saves on its own anyway) |
+| Undo | `Ctrl/Cmd+Z` (including what the menu buttons do) |
+| Redo | `Ctrl+Y` or `Ctrl/Cmd+Shift+Z` |
 | Paste an error as a folded block | **Paste block** button, or `Ctrl/Cmd+Shift+V` |
 | Wrap the selection in a block | `Ctrl/Cmd+Shift+B` |
 | Turn the selection into a link | right click → **Internet link**, or `Ctrl/Cmd+Shift+L` |

@@ -172,6 +172,7 @@ async function abrir(archivo) {
   $("titulo").value = nota.titulo;
   $("tags").value = nota.tags || "";
   $("editor").value = nota.cuerpo || "";
+  reiniciarHistorial();
   renderizar();
   pintarLista($("buscar").value);
   $("estado").textContent = "abierta · " + nota.archivo;
@@ -302,6 +303,7 @@ async function pegarBloque() {
 }
 
 function insertarEnCursor(texto) {
+  guardarPunto(true);
   const ed = $("editor");
   const haySeleccion = ed.selectionEnd > ed.selectionStart;
 
@@ -404,6 +406,7 @@ function lineaDelCursor(ed) {
 }
 
 function aplicarTitulo(n) {
+  guardarPunto(true);
   const ed = $("editor");
   const { ini, fin, texto } = lineaDelCursor(ed);
   const marcas = "#".repeat(n) + " ";
@@ -414,6 +417,7 @@ function aplicarTitulo(n) {
 }
 
 function insertarTexto(t) {
+  guardarPunto(true);
   const ed = $("editor");
   ed.setRangeText(t, ed.selectionStart, ed.selectionEnd, "end");
   marcarSucio();
@@ -421,6 +425,7 @@ function insertarTexto(t) {
 }
 
 function insertarBloqueCodigo() {
+  guardarPunto(true);
   const ed = $("editor");
   const ini = ed.selectionStart;
   const fin = ed.selectionEnd;
@@ -444,6 +449,7 @@ function insertarTabla() {
 }
 
 function marcarSeleccion(marca) {
+  guardarPunto(true);
   const ed = $("editor");
   const ini = ed.selectionStart;
   const fin = ed.selectionEnd;
@@ -455,6 +461,71 @@ function marcarSeleccion(marca) {
   }
   marcarSucio();
   ed.focus();
+}
+
+// --------------------------------------------------- deshacer / rehacer
+// El undo del WebView no cubre los cambios que hace el menú (asignar el valor
+// del textarea no entra en su historial), así que llevamos el nuestro.
+const historial = { pila: [], rehacer: [], ultimo: 0 };
+
+function reiniciarHistorial() {
+  historial.pila = [];
+  historial.rehacer = [];
+  historial.ultimo = 0;
+}
+
+function guardarPunto(separado = false) {
+  const ed = $("editor");
+  const ultimo = historial.pila[historial.pila.length - 1];
+  if (ultimo && ultimo.valor === ed.value) return;
+
+  // al tipear se agrupa: un punto cada 700 ms de pausa
+  const ahora = Date.now();
+  if (!separado && ahora - historial.ultimo < 700) {
+    historial.ultimo = ahora;
+    return;
+  }
+
+  historial.pila.push({ valor: ed.value, ini: ed.selectionStart, fin: ed.selectionEnd });
+  if (historial.pila.length > 150) historial.pila.shift();
+  historial.rehacer = [];
+  historial.ultimo = ahora;
+}
+
+function aplicarPunto(p) {
+  const ed = $("editor");
+  ed.value = p.valor;
+  ed.selectionStart = p.ini;
+  ed.selectionEnd = p.fin;
+  ed.focus();
+  marcarSucio();
+}
+
+function deshacer() {
+  const ed = $("editor");
+  const actual = { valor: ed.value, ini: ed.selectionStart, fin: ed.selectionEnd };
+
+  let previo = null;
+  while (historial.pila.length) {
+    const p = historial.pila.pop();
+    if (p.valor !== actual.valor) { previo = p; break; }
+  }
+  if (!previo) {
+    $("estado").textContent = "no hay nada para deshacer";
+    return;
+  }
+  historial.rehacer.push(actual);
+  aplicarPunto(previo);
+  $("estado").textContent = "deshecho";
+}
+
+function rehacer() {
+  const p = historial.rehacer.pop();
+  if (!p) return;
+  const ed = $("editor");
+  historial.pila.push({ valor: ed.value, ini: ed.selectionStart, fin: ed.selectionEnd });
+  aplicarPunto(p);
+  $("estado").textContent = "rehecho";
 }
 
 // --------------------------------------------------------------- links
@@ -509,6 +580,7 @@ function normalizarUrl(url) {
 }
 
 function aplicarEnlace(ini, fin, sel, url) {
+  guardarPunto(true);
   const ed = $("editor");
   const limpia = normalizarUrl(url);
   if (!limpia) {
@@ -625,7 +697,7 @@ function cerrarPaleta() {
 
 // ------------------------------------------------------------------- eventos
 function conectarEventos() {
-  $("editor").addEventListener("input", marcarSucio);
+  $("editor").addEventListener("input", () => { guardarPunto(); marcarSucio(); });
   $("titulo").addEventListener("input", marcarSucio);
   $("tags").addEventListener("input", marcarSucio);
   $("editor").addEventListener("blur", guardarYa);
@@ -787,6 +859,13 @@ function conectarEventos() {
   document.addEventListener("keydown", (e) => {
     const ctrl = e.ctrlKey || e.metaKey;
     if (e.key === "Escape") { cerrarModal(); cerrarMenu(); cerrarPaleta(); return; }
+
+    // deshacer / rehacer: en el editor usa nuestro historial, no el del WebView
+    if (document.activeElement === $("editor")) {
+      const k = e.key.toLowerCase();
+      if (ctrl && !e.shiftKey && k === "z") { e.preventDefault(); deshacer(); return; }
+      if (ctrl && (k === "y" || (e.shiftKey && k === "z"))) { e.preventDefault(); rehacer(); return; }
+    }
 
     if (ctrl && e.shiftKey && e.key.toLowerCase() === "v") { e.preventDefault(); pegarBloque(); }
     if (ctrl && e.shiftKey && e.key.toLowerCase() === "b") { e.preventDefault(); envolverSeleccion(); }
