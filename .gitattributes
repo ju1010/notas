@@ -7,7 +7,9 @@
 *.command text eol=lf
 *.sh      text eol=lf
 *.py      text eol=lf
-*.bat     text eol=crlf
+# El .bat va con CRLF tambien dentro del repo: cmd.exe tolera LF en la mayoria
+# de los casos, pero no siempre, y el ZIP de GitHub no convierte finales de linea.
+*.bat     binary
 
 *.ico     binary
 *.png     binary
