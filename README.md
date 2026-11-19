@@ -1,5 +1,7 @@
 # Notas
 
+[![CI](https://github.com/ju1010/notas/actions/workflows/ci.yml/badge.svg)](https://github.com/ju1010/notas/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/ju1010/notas/blob/main/LICENSE)
+
 **Español** · [English](README.en.md)
 
 App de notas local para escribir rápido mientras trabajás. Sin nube, sin cuenta, sin internet:
